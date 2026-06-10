@@ -245,8 +245,19 @@
         });
       }
 
-      // app open button — same URL triggers App Links / Universal Links if app installed
-      document.getElementById('btn-app').href = window.location.href;
+      // app open button
+      // Android: intent:// 스킴으로 앱 직접 실행 (미설치 시 Play Store 이동)
+      // iOS: Universal Links 설정 완료 후 동일 URL로 동작
+      var ua = navigator.userAgent || '';
+      if (/android/i.test(ua)) {
+        document.getElementById('btn-app').href =
+          'intent://foresightcompanylab.github.io/news-briefing-share/?d=' +
+          encodeURIComponent(d) +
+          '#Intent;scheme=https;package=com.foresight.news_briefing;' +
+          'S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.foresight.news_briefing;end';
+      } else {
+        document.getElementById('btn-app').href = window.location.href;
+      }
 
       document.getElementById('main-view').style.display = 'block';
 
