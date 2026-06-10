@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>5분브리핑</title>
+  <meta property="og:title" id="og-title" content="5분브리핑">
+  <meta property="og:description" id="og-desc" content="오늘의 핵심 브리핑">
+  <meta property="og:site_name" content="5분브리핑">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #051131;
+      color: #E8EEFF;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 20px 48px;
+    }
+    .header {
+      width: 100%;
+      max-width: 480px;
+      margin-bottom: 28px;
+    }
+    .app-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: #EFA830;
+      letter-spacing: -0.3px;
+    }
+    .app-sub {
+      font-size: 12px;
+      color: #4A5578;
+      margin-top: 3px;
+    }
+    .card {
+      width: 100%;
+      max-width: 480px;
+      background: #0C1C45;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 14px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+    .badge-stock   { background: rgba(232,112,96,.15); color: #E87060; }
+    .badge-economy { background: rgba(61,196,154,.15);  color: #3DC49A; }
+    .badge-society { background: rgba(155,148,232,.15); color: #9B94E8; }
+    .badge-default { background: rgba(136,146,176,.15); color: #8892B0; }
+    .item-text {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #E8EEFF;
+      word-break: keep-all;
+    }
+    .divider {
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+      margin: 18px 0;
+    }
+    .sources-label {
+      font-size: 12px;
+      color: #8892B0;
+      margin-bottom: 10px;
+    }
+    .source-link {
+      display: block;
+      background: #132560;
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      text-decoration: none;
+      color: #E8EEFF;
+      font-size: 13px;
+      line-height: 1.45;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .source-link:last-child { margin-bottom: 0; }
+    .source-link:hover { opacity: 0.8; }
+    .source-title { flex: 1; }
+    .source-icon { font-size: 11px; opacity: 0.5; flex-shrink: 0; margin-top: 2px; }
+    .btn-wrap {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-primary  { background: #EFA830; color: #051131; }
+    .btn-secondary {
+      background: #0C1C45;
+      color: #E8EEFF;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .footer {
+      margin-top: 40px;
+      font-size: 12px;
+      color: #4A5578;
+      text-align: center;
+      line-height: 1.6;
+    }
+    #error-view {
+      display: none;
+      text-align: center;
+      padding: 60px 20px;
+      width: 100%;
+      max-width: 480px;
+    }
+    #error-view p { color: #8892B0; font-size: 15px; margin-bottom: 24px; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="app-name">5분브리핑</div>
+    <div class="app-sub">오늘의 핵심을 5분 안에</div>
+  </div>
+
+  <div id="main-view" style="width:100%;max-width:480px;display:none">
+    <div class="card">
+      <span class="badge badge-default" id="badge">브리핑</span>
+      <div class="item-text" id="item-text"></div>
+      <div id="sources-section" style="display:none">
+        <div class="divider"></div>
+        <div class="sources-label" id="sources-label">관련 기사</div>
+        <div id="sources-list"></div>
+      </div>
+    </div>
+
+    <div class="btn-wrap">
+      <a class="btn btn-primary" id="btn-app" href="#">앱에서 보기</a>
+      <a class="btn btn-secondary"
+         href="https://play.google.com/store/apps/details?id=com.foresight.news_briefing"
+         target="_blank" rel="noopener">
+        앱 다운로드 (Android)
+      </a>
+    </div>
+  </div>
+
+  <div id="error-view">
+    <p>링크가 올바르지 않거나 만료되었어요.</p>
+    <a class="btn btn-primary"
+       href="https://play.google.com/store/apps/details?id=com.foresight.news_briefing"
+       target="_blank" rel="noopener">
+      5분브리핑 다운로드
+    </a>
+  </div>
+
+  <div class="footer">
+    5분브리핑 &middot; 매일 아침 6시 뉴스 브리핑
+  </div>
+
+  <script>
+    (function () {
+      function b64decode(str) {
+        str = str.replace(/-/g, '+').replace(/_/g, '/');
+        while (str.length % 4) str += '=';
+        try {
+          return decodeURIComponent(
+            Array.prototype.map.call(atob(str), function(c) {
+              return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join('')
+          );
+        } catch (e) { return null; }
+      }
+
+      var params = new URLSearchParams(window.location.search);
+      var d = params.get('d');
+
+      if (!d) { showError(); return; }
+
+      var raw = b64decode(d);
+      if (!raw) { showError(); return; }
+
+      var data;
+      try { data = JSON.parse(raw); } catch(e) { showError(); return; }
+
+      // badge
+      var secMap = {
+        stock:   ['증시',  'stock'],
+        economy: ['경제',  'economy'],
+        society: ['사회',  'society']
+      };
+      var sec = secMap[data.sec] || ['브리핑', 'default'];
+      var badge = document.getElementById('badge');
+      badge.textContent = sec[0];
+      badge.className = 'badge badge-' + sec[1];
+
+      // item text
+      document.getElementById('item-text').textContent = data.t || '';
+
+      // OG
+      document.getElementById('og-title').content = '[' + sec[0] + '] ' + (data.t || '').substring(0, 60);
+      document.getElementById('og-desc').content = data.t || '';
+
+      // sources
+      if (data.src && data.src.length > 0) {
+        document.getElementById('sources-section').style.display = 'block';
+        document.getElementById('sources-label').textContent =
+          '관련 기사 ' + data.src.length + '건';
+        var list = document.getElementById('sources-list');
+        data.src.forEach(function(s) {
+          var a = document.createElement('a');
+          a.className = 'source-link';
+          a.href = s.u || '#';
+          a.target = '_blank';
+          a.rel = 'noopener';
+          a.innerHTML =
+            '<span class="source-title">' + escapeHtml(s.t || s.u || '') + '</span>' +
+            '<span class="source-icon">↗</span>';
+          list.appendChild(a);
+        });
+      }
+
+      // app open button — same URL triggers App Links / Universal Links if app installed
+      document.getElementById('btn-app').href = window.location.href;
+
+      document.getElementById('main-view').style.display = 'block';
+
+      function showError() {
+        document.getElementById('error-view').style.display = 'block';
+      }
+
+      function escapeHtml(s) {
+        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      }
+    })();
+  </script>
+</body>
+</html>
