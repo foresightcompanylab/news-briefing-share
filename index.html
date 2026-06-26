@@ -103,6 +103,36 @@
     .source-link:hover { opacity: 0.8; }
     .source-title { flex: 1; }
     .source-icon { font-size: 11px; opacity: 0.5; flex-shrink: 0; margin-top: 2px; }
+    .market-context-box {
+      border-radius: 10px;
+      padding: 14px;
+      margin-top: 18px;
+      border-width: 1px;
+      border-style: solid;
+    }
+    .market-context-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 6px;
+    }
+    .market-context-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #8892B0;
+      flex: 1;
+    }
+    .strength-badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+    .market-context-text {
+      font-size: 13px;
+      line-height: 1.65;
+      color: #8892B0;
+    }
     .btn-wrap {
       width: 100%;
       max-width: 480px;
@@ -164,6 +194,16 @@
     <div class="card">
       <span class="badge badge-default" id="badge">브리핑</span>
       <div class="item-text" id="item-text"></div>
+      <div id="market-context-section" style="display:none">
+        <div class="market-context-box" id="market-context-box">
+          <div class="market-context-header">
+            <span>📈</span>
+            <span class="market-context-title">증시 맥락</span>
+            <span class="strength-badge" id="strength-badge"></span>
+          </div>
+          <div class="market-context-text" id="market-context-text"></div>
+        </div>
+      </div>
       <div id="sources-section" style="display:none">
         <div class="divider"></div>
         <div class="sources-label" id="sources-label">관련 기사</div>
@@ -214,7 +254,7 @@
       // ── 신버전: Supabase에서 데이터 fetch ──────────────────────────
       function fetchFromSupabase(shareId) {
         fetch(
-          SUPABASE_URL + '/rest/v1/share_cache?id=eq.' + encodeURIComponent(shareId) + '&select=section,item_text,sources',
+          SUPABASE_URL + '/rest/v1/share_cache?id=eq.' + encodeURIComponent(shareId) + '&select=section,item_text,sources,market_context,insight_strength',
           {
             headers: {
               'apikey': SUPABASE_ANON_KEY,
@@ -231,7 +271,9 @@
             t: row.item_text,
             src: (row.sources || []).map(function(s) {
               return { t: s.title, u: s.link };
-            })
+            }),
+            market_context: row.market_context || null,
+            insight_strength: row.insight_strength || null,
           });
           setAppOpenButton('?id=' + shareId);
         })
@@ -262,6 +304,26 @@
 
         document.getElementById('item-text').textContent = data.t || '';
 
+        // 증시 맥락
+        if (data.market_context) {
+          var strengthMap = {
+            strong:   { label: '시장 영향 높음', color: '#EFA830' },
+            moderate: { label: '시장 영향 중간', color: '#3DC49A' },
+            weak:     { label: '시장 영향 낮음', color: '#8892B0' },
+          };
+          var st = strengthMap[data.insight_strength] || strengthMap['weak'];
+          var box = document.getElementById('market-context-box');
+          box.style.background = 'rgba(255,255,255,0.04)';
+          box.style.borderColor = st.color + '40';
+          var badge = document.getElementById('strength-badge');
+          badge.textContent = st.label;
+          badge.style.background = st.color + '20';
+          badge.style.color = st.color;
+          document.getElementById('market-context-text').textContent = data.market_context;
+          document.getElementById('market-context-section').style.display = 'block';
+        }
+
+        // 관련 기사
         if (data.src && data.src.length > 0) {
           document.getElementById('sources-section').style.display = 'block';
           document.getElementById('sources-label').textContent =
